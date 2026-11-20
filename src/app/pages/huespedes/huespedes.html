@@ -1,9 +1,8 @@
+
 <div class="page-heading">
 
   <div>
-    <span class="eyebrow">
-      RELACIÓN CON CLIENTES
-    </span>
+    <span class="eyebrow">RELACIÓN CON CLIENTES</span>
 
     <h1>Huéspedes</h1>
 
@@ -13,7 +12,10 @@
     </p>
   </div>
 
-  <button class="primary-btn" (click)="abrirModal()">
+  <button
+    class="primary-btn"
+    type="button"
+    (click)="abrirModal()">
     ＋ Registrar huésped
   </button>
 
@@ -74,7 +76,6 @@
           <tr>
 
             <td>
-
               <div class="guest-name">
 
                 <span class="guest-avatar">
@@ -84,7 +85,6 @@
                 <strong>{{ guest.name }}</strong>
 
               </div>
-
             </td>
 
             <td>{{ guest.document }}</td>
@@ -94,23 +94,18 @@
             <td>{{ guest.phone }}</td>
 
             <td>
-
               <button
+                type="button"
                 class="delete-btn"
                 (click)="eliminar(guest)"
                 title="Eliminar huésped">
-
                 Eliminar
-
               </button>
-
             </td>
 
           </tr>
 
-        }
-
-        @empty {
+        } @empty {
 
           <tr>
             <td colspan="5" class="empty">
@@ -132,12 +127,14 @@
 
   <div
     class="modal-backdrop"
-    (click)="modalAbierto = false">
+    (click)="cerrarModal()">
 
     <form
       class="modal"
+      #guestForm="ngForm"
       (click)="$event.stopPropagation()"
-      (ngSubmit)="guardar()">
+      (ngSubmit)="guardar(guestForm)"
+      novalidate>
 
       <div class="modal-head">
 
@@ -149,64 +146,151 @@
         <button
           type="button"
           class="close-btn"
-          (click)="modalAbierto = false">
+          (click)="cerrarModal()"
+          aria-label="Cerrar formulario">
           ×
         </button>
 
       </div>
 
+      <!-- NOMBRE COMPLETO -->
+
       <label>
         Nombre completo
 
         <input
+          type="text"
           name="name"
           [(ngModel)]="nuevo.name"
+          #nameInput="ngModel"
           required
-          placeholder="Nombre y apellidos">
+          minlength="5"
+          maxlength="70"
+          [pattern]="nombrePattern"
+          autocomplete="off"
+          placeholder="Ej. Ana Maria Torres"
+          [class.input-error]="nameInput.invalid && (nameInput.touched || enviado)">
+
+        @if ((nameInput.touched || enviado) && nameInput.errors?.['required']) {
+          <small class="field-error">
+            El nombre completo es obligatorio.
+          </small>
+        } @else if ((nameInput.touched || enviado) && nameInput.errors?.['minlength']) {
+          <small class="field-error">
+            Ingresa tu nombre y al menos un apellido.
+          </small>
+        } @else if ((nameInput.touched || enviado) && nameInput.errors?.['pattern']) {
+          <small class="field-error">
+            Cada palabra debe comenzar con mayúscula y continuar en minúsculas. No se permiten números ni signos.
+          </small>
+        }
       </label>
+
+      <!-- CORREO -->
 
       <label>
         Correo electrónico
 
         <input
-          name="email"
           type="email"
+          name="email"
           [(ngModel)]="nuevo.email"
+          #emailInput="ngModel"
           required
-          placeholder="correo@ejemplo.com">
+          maxlength="100"
+          [pattern]="correoPattern"
+          autocomplete="off"
+          placeholder="correo@ejemplo.com"
+          [class.input-error]="emailInput.invalid && (emailInput.touched || enviado)">
+
+        @if ((emailInput.touched || enviado) && emailInput.errors?.['required']) {
+          <small class="field-error">
+            El correo electrónico es obligatorio.
+          </small>
+        } @else if ((emailInput.touched || enviado) && emailInput.invalid) {
+          <small class="field-error">
+            Ingresa un correo válido terminado en .com o .edu.pe.
+          </small>
+        }
       </label>
+
+      <!-- DOCUMENTO -->
 
       <label>
-        Documento de identidad
+        Documento de identidad (DNI)
 
         <input
+          type="text"
           name="document"
           [(ngModel)]="nuevo.document"
+          #documentInput="ngModel"
           required
-          placeholder="Número de documento">
+          maxlength="8"
+          inputmode="numeric"
+          [pattern]="documentoPattern"
+          autocomplete="off"
+          placeholder="Ej. 12345678"
+          [class.input-error]="documentInput.invalid && (documentInput.touched || enviado)">
+
+        @if ((documentInput.touched || enviado) && documentInput.errors?.['required']) {
+          <small class="field-error">
+            El DNI es obligatorio.
+          </small>
+        } @else if ((documentInput.touched || enviado) && documentInput.errors?.['pattern']) {
+          <small class="field-error">
+            El DNI debe contener exactamente 8 números.
+          </small>
+        }
       </label>
+
+      <!-- TELÉFONO -->
 
       <label>
         Teléfono
 
         <input
+          type="tel"
           name="phone"
           [(ngModel)]="nuevo.phone"
-          placeholder="999 999 999">
+          #phoneInput="ngModel"
+          required
+          maxlength="9"
+          inputmode="numeric"
+          [pattern]="telefonoPattern"
+          autocomplete="off"
+          placeholder="Ej. 987654321"
+          [class.input-error]="phoneInput.invalid && (phoneInput.touched || enviado)">
+
+        @if ((phoneInput.touched || enviado) && phoneInput.errors?.['required']) {
+          <small class="field-error">
+            El teléfono es obligatorio.
+          </small>
+        } @else if ((phoneInput.touched || enviado) && phoneInput.errors?.['pattern']) {
+          <small class="field-error">
+            El teléfono debe contener exactamente 9 números.
+          </small>
+        }
       </label>
+
+      @if (enviado && !formularioValido) {
+        <div class="form-error-summary">
+          Revisa los campos señalados antes de guardar el huésped.
+        </div>
+      }
 
       <div class="modal-actions">
 
         <button
           type="button"
           class="secondary-btn"
-          (click)="modalAbierto = false">
+          (click)="cerrarModal()">
           Cancelar
         </button>
 
         <button
           class="primary-btn"
-          type="submit">
+          type="submit"
+          [disabled]="!formularioValido || guestForm.invalid">
           Guardar huésped
         </button>
 

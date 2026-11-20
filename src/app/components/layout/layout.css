@@ -1,3 +1,4 @@
+
 :host {
   display: block;
   min-height: 100vh;
@@ -23,6 +24,7 @@
     #160a0d 100%
   );
   box-shadow: 10px 0 35px #320c1410;
+  overflow-y: auto;
 }
 
 .brand {
@@ -169,6 +171,7 @@
   font-weight: 800;
   width: 35px;
   height: 35px;
+  flex-shrink: 0;
 }
 
 .profile-mini strong,
@@ -186,10 +189,43 @@
   margin-top: 4px;
 }
 
-.profile-dots {
+/* BOTÓN CERRAR SESIÓN */
+.logout-button {
+  width: 100%;
+  min-height: 43px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  margin-bottom: 16px;
+  border: 1px solid #71333d;
+  border-radius: 9px;
+  background: #ffffff08;
+  color: #f0c7cc;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: all .25s ease;
+}
+
+.logout-button:hover {
+  background: linear-gradient(100deg, #a7142b, #d52b40);
+  border-color: #e75b69;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px #bd1b3140;
+}
+
+.logout-icon {
+  font-size: 19px;
+}
+
+.logout-arrow {
   margin-left: auto;
-  color: #caaeb2;
-  letter-spacing: 2px;
+  font-size: 16px;
+  opacity: .7;
 }
 
 .sidebar-foot {

@@ -1,0 +1,120 @@
+
+<div class="login-page">
+  <section class="hotel-panel">
+    <div class="hotel-overlay"></div>
+
+    <div class="hotel-content">
+      <div class="hotel-brand">
+        <span class="brand-icon">✦</span>
+        <span>TINKY HOTEL</span>
+      </div>
+
+      <div class="welcome-text">
+        <span class="eyebrow">EXPERIENCIA Y ELEGANCIA</span>
+        <h1>Un lugar donde<br>el confort se<br><em>vuelve experiencia.</em></h1>
+        <p>Bienvenido a nuestro sistema de gestión hotelera.</p>
+      </div>
+
+      <div class="hotel-footer">
+        <span>HOSPITALIDAD · EXCELENCIA · CONFORT</span>
+        <span>© 2026 TINKY HOTEL</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-panel">
+    <div class="form-container">
+
+      <div class="mobile-brand">
+        <span>✦ TINKY HOTEL</span>
+      </div>
+
+      <div class="form-heading">
+        <span class="form-label">BIENVENIDO DE NUEVO</span>
+        <h2>Iniciar sesión</h2>
+        <p>Ingresa tus credenciales para acceder al sistema.</p>
+      </div>
+
+      <form #loginForm="ngForm" (ngSubmit)="login()">
+
+        <div class="field">
+          <label for="email">Correo electrónico</label>
+          <div class="input-wrapper">
+            <span class="field-icon">✉</span>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              [(ngModel)]="email"
+              #emailInput="ngModel"
+              placeholder="ejemplo@tinkyhotel.com"
+              required
+              [pattern]="emailPattern"
+              autocomplete="username">
+          </div>
+
+          <small class="validation"
+            *ngIf="emailInput.invalid && emailInput.touched">
+            Ingresa un correo válido terminado en .com o .edu.pe.
+          </small>
+        </div>
+
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <div class="input-wrapper">
+            <span class="field-icon">▣</span>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              name="password"
+              [(ngModel)]="password"
+              #passwordInput="ngModel"
+              placeholder="Ingresa tu contraseña"
+              required
+              minlength="8"
+              autocomplete="current-password">
+
+            <button
+              type="button"
+              class="show-password"
+              (click)="togglePassword()">
+              {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
+
+          <small class="validation"
+            *ngIf="passwordInput.invalid && passwordInput.touched">
+            La contraseña debe tener al menos 8 caracteres.
+          </small>
+        </div>
+
+        <div class="error-message" *ngIf="errorMessage">
+          <span>!</span>
+          {{ errorMessage }}
+        </div>
+
+        <button
+          type="submit"
+          class="login-button"
+          [disabled]="loading || loginForm.invalid">
+
+          <span *ngIf="!loading">Ingresar al sistema <span>→</span></span>
+          <span *ngIf="loading">Ingresando...</span>
+        </button>
+
+      </form>
+
+      <div class="security-note">
+        <span>♢</span>
+        Acceso exclusivo para personal autorizado.
+      </div>
+
+      <div class="demo-access">
+        <strong>Credenciales de demostración</strong>
+        <p>Correo: admin@tinkyhotel.com</p>
+        <p>Contraseña: Tinky2026*</p>
+      </div>
+
+    </div>
+  </section>
+</div>

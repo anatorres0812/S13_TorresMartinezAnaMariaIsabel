@@ -1,3 +1,4 @@
+
 <div class="app-shell">
 
   <div
@@ -8,17 +9,17 @@
 
   <aside class="sidebar" [class.sidebar-open]="menuAbierto">
 
+    <!-- MARCA -->
     <a class="brand" routerLink="/inicio" (click)="cerrarMenu()">
-
       <span class="brand-mark">T</span>
 
       <span class="brand-copy">
         <strong>TINKY HOTEL</strong>
         <small>BOUTIQUE · EXPERIENCE</small>
       </span>
-
     </a>
 
+    <!-- NAVEGACIÓN -->
     <div class="nav-caption">MENÚ PRINCIPAL</div>
 
     <nav class="nav-list">
@@ -32,7 +33,6 @@
         <span class="nav-symbol">⌂</span>
         <span>Inicio</span>
         <span class="nav-arrow">›</span>
-
       </a>
 
       <a
@@ -43,7 +43,6 @@
         <span class="nav-symbol">▤</span>
         <span>Habitaciones</span>
         <span class="nav-arrow">›</span>
-
       </a>
 
       <a
@@ -54,7 +53,6 @@
         <span class="nav-symbol">♙</span>
         <span>Huéspedes</span>
         <span class="nav-arrow">›</span>
-
       </a>
 
       <a
@@ -65,34 +63,47 @@
         <span class="nav-symbol">▦</span>
         <span>Reservas</span>
         <span class="nav-arrow">›</span>
-
       </a>
 
     </nav>
 
     <div class="sidebar-spacer"></div>
 
+    <!-- MENSAJE -->
     <div class="sidebar-note">
       <span class="note-spark">✦</span>
+
       <strong>Una estancia especial</strong>
+
       <p>
         Cuidamos cada detalle para ofrecer
         experiencias memorables.
       </p>
     </div>
 
+    <!-- PERFIL -->
     <div class="profile-mini">
 
       <div class="profile-avatar">AD</div>
 
-      <div>
+      <div class="profile-info">
         <strong>Administrador</strong>
         <small>Panel de gestión</small>
       </div>
 
-      <span class="profile-dots">•••</span>
-
     </div>
+
+    <!-- CERRAR SESIÓN -->
+    <button
+      class="logout-button"
+      type="button"
+      (click)="cerrarSesion()">
+
+      <span class="logout-icon">↪</span>
+      <span>Cerrar sesión</span>
+      <span class="logout-arrow">→</span>
+
+    </button>
 
     <div class="sidebar-foot">
       TINKY HOTEL · 2026
@@ -100,6 +111,7 @@
 
   </aside>
 
+  <!-- CONTENIDO PRINCIPAL -->
   <main class="main-area">
 
     <header class="topbar">

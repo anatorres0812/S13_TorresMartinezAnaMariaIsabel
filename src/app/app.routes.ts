@@ -1,42 +1,65 @@
+
 import { Routes } from '@angular/router';
 
+import { Login } from './pages/login/login';
 import { Layout } from './components/layout/layout';
-import { Inicio } from './pages/inicio/inicio';
-import { Habitaciones } from './pages/habitaciones/habitaciones';
-import { Huespedes } from './pages/huespedes/huespedes';
-import { Reservas } from './pages/reservas/reservas';
-import { NoEncontrado } from './pages/no-encontrado/no-encontrado';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
+
+  // Login público
+  {
+    path: 'login',
+    component: Login
+  },
+
+  // Panel protegido con menú lateral
   {
     path: '',
     component: Layout,
+    canActivate: [authGuard],
     children: [
+
       {
         path: '',
         redirectTo: 'inicio',
         pathMatch: 'full'
       },
+
       {
         path: 'inicio',
-        component: Inicio
+        loadComponent: () =>
+          import('./pages/inicio/inicio')
+            .then(m => m.Inicio)
       },
+
       {
         path: 'habitaciones',
-        component: Habitaciones
+        loadComponent: () =>
+          import('./pages/habitaciones/habitaciones')
+            .then(m => m.Habitaciones)
       },
+
       {
         path: 'huespedes',
-        component: Huespedes
+        loadComponent: () =>
+          import('./pages/huespedes/huespedes')
+            .then(m => m.Huespedes)
       },
+
       {
         path: 'reservas',
-        component: Reservas
+        loadComponent: () =>
+          import('./pages/reservas/reservas')
+            .then(m => m.Reservas)
+      },
+
+      {
+        path: '**',
+        redirectTo: 'inicio'
       }
+
     ]
-  },
-  {
-    path: '**',
-    component: NoEncontrado
   }
+
 ];

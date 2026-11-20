@@ -1,25 +1,17 @@
+
 <div class="page-heading">
-
   <div>
-    <span class="eyebrow">
-      ESTANCIAS · CONTROL DE INGRESOS
-    </span>
-
+    <span class="eyebrow">ESTANCIAS · CONTROL DE INGRESOS</span>
     <h1>Reservas</h1>
-
-    <p>
-      Organiza las estancias y acompaña cada experiencia.
-    </p>
+    <p>Organiza las estancias y acompaña cada experiencia.</p>
   </div>
 
-  <button class="primary-btn" (click)="abrirModal()">
+  <button class="primary-btn" type="button" (click)="abrirModal()">
     ＋ Nueva reserva
   </button>
-
 </div>
 
 <div class="reservation-counters">
-
   <div>
     <small>TOTAL RESERVAS</small>
     <strong>{{ allReservations.length }}</strong>
@@ -39,40 +31,32 @@
     <small>CANCELADAS</small>
     <strong>{{ cancelledCount }}</strong>
   </div>
-
 </div>
 
 <section class="table-card">
-
   <div class="toolbar">
-
     <div>
       <h2>Registro de reservas</h2>
       <p>Consulta y actualiza el estado de cada estancia.</p>
     </div>
 
     <div class="tools">
-
       <input
         class="search"
         [(ngModel)]="busqueda"
         placeholder="⌕ Buscar huésped o habitación">
 
       <select [(ngModel)]="filtro">
-        <option>Todas</option>
-        <option>Confirmada</option>
-        <option>Pendiente</option>
-        <option>Cancelada</option>
+        <option value="Todas">Todas</option>
+        <option value="Confirmada">Confirmada</option>
+        <option value="Pendiente">Pendiente</option>
+        <option value="Cancelada">Cancelada</option>
       </select>
-
     </div>
-
   </div>
 
   <div class="table-scroll">
-
     <table>
-
       <thead>
         <tr>
           <th>CÓDIGO</th>
@@ -86,108 +70,71 @@
       </thead>
 
       <tbody>
-
         @for (r of reservations; track r.id) {
-
           <tr>
-
             <td class="code">
               TH-{{ r.id.toString().padStart(4, '0') }}
             </td>
 
-            <td>
-              <strong>{{ r.guest }}</strong>
-            </td>
+            <td><strong>{{ r.guest }}</strong></td>
+            <td>Hab. {{ r.room }}</td>
+            <td>{{ r.checkIn | date:'dd/MM/yyyy' }}</td>
+            <td>{{ r.checkOut | date:'dd/MM/yyyy' }}</td>
 
             <td>
-              Hab. {{ r.room }}
-            </td>
-
-            <td>
-              {{ r.checkIn | date:'dd/MM/yyyy' }}
-            </td>
-
-            <td>
-              {{ r.checkOut | date:'dd/MM/yyyy' }}
-            </td>
-
-            <td>
-
               <span
                 class="status"
                 [class.confirmed]="r.status === 'Confirmada'"
                 [class.pending]="r.status === 'Pendiente'"
                 [class.cancelled]="r.status === 'Cancelada'">
-
                 {{ r.status }}
-
               </span>
-
             </td>
 
             <td>
-
               <div class="row-actions">
-
                 <select
                   [value]="r.status"
                   (change)="cambiarEstado(r, $event)"
                   aria-label="Cambiar estado">
-
-                  <option>Confirmada</option>
-                  <option>Pendiente</option>
-                  <option>Cancelada</option>
-
+                  <option value="Confirmada">Confirmada</option>
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="Cancelada">Cancelada</option>
                 </select>
 
                 <button
+                  type="button"
                   class="delete-btn"
                   (click)="eliminar(r)"
                   title="Eliminar reserva">
-
                   ×
-
                 </button>
-
               </div>
-
             </td>
-
           </tr>
-
-        }
-
-        @empty {
-
+        } @empty {
           <tr>
             <td colspan="7" class="empty">
               No se encontraron reservas.
             </td>
           </tr>
-
         }
-
       </tbody>
-
     </table>
-
   </div>
-
 </section>
 
 @if (modalAbierto) {
-
-  <div
-    class="modal-backdrop"
-    (click)="modalAbierto = false">
+  <div class="modal-backdrop" (click)="cerrarModal()">
 
     <form
       class="modal"
+      #reservaForm="ngForm"
       (click)="$event.stopPropagation()"
-      (ngSubmit)="guardar()">
+      (ngSubmit)="guardar(reservaForm)"
+      novalidate>
 
       <div class="modal-head">
-
         <div>
           <span class="eyebrow">NUEVA ESTANCIA</span>
           <h2>Crear reserva</h2>
@@ -196,91 +143,152 @@
         <button
           type="button"
           class="close-btn"
-          (click)="modalAbierto = false">
-
+          (click)="cerrarModal()"
+          aria-label="Cerrar formulario">
           ×
-
         </button>
-
       </div>
 
+      <!-- NOMBRE DEL HUÉSPED -->
       <label>
         Nombre del huésped
 
         <input
+          type="text"
           name="guest"
           [(ngModel)]="nueva.guest"
+          #guest="ngModel"
           required
-          placeholder="Nombre completo">
+          minlength="2"
+          [pattern]="nombrePattern"
+          maxlength="70"
+          autocomplete="off"
+          placeholder="Ej. Ana Maria Torres"
+          [class.input-error]="(guest.invalid && (guest.touched || enviado)) || (enviado && !nombreValido)">
+
+        @if ((guest.touched || enviado) && guest.errors?.['required']) {
+          <small class="field-error">El nombre del huésped es obligatorio.</small>
+        } @else if ((guest.touched || enviado) && guest.errors?.['minlength']) {
+          <small class="field-error">El nombre debe tener al menos 2 caracteres.</small>
+        } @else if ((guest.touched || enviado) && guest.errors?.['pattern']) {
+          <small class="field-error">
+            Usa mayúscula inicial en cada nombre. No se permiten números ni signos.
+          </small>
+        }
       </label>
 
+      <!-- HABITACIÓN -->
       <label>
         Número de habitación
 
         <input
+          type="text"
           name="room"
           [(ngModel)]="nueva.room"
+          #room="ngModel"
           required
-          placeholder="Ej. 204">
+          [pattern]="habitacionPattern"
+          maxlength="5"
+          inputmode="numeric"
+          autocomplete="off"
+          placeholder="Ej. 204"
+          [class.input-error]="room.invalid && (room.touched || enviado)">
+
+        @if ((room.touched || enviado) && room.errors?.['required']) {
+          <small class="field-error">El número de habitación es obligatorio.</small>
+        } @else if ((room.touched || enviado) && room.errors?.['pattern']) {
+          <small class="field-error">
+            Ingresa solamente números enteros positivos, sin letras ni signos.
+          </small>
+        }
       </label>
 
+      <!-- FECHAS -->
       <div class="date-grid">
 
         <label>
           Fecha de entrada
 
           <input
-            name="checkIn"
             type="date"
+            name="checkIn"
             [(ngModel)]="nueva.checkIn"
-            required>
+            #checkIn="ngModel"
+            [min]="hoy"
+            required
+            [class.input-error]="(checkIn.invalid && (checkIn.touched || enviado)) || (enviado && !entradaValida)">
+
+          @if ((checkIn.touched || enviado) && checkIn.errors?.['required']) {
+            <small class="field-error">Selecciona la fecha de entrada.</small>
+          } @else if ((checkIn.touched || enviado) && !entradaValida) {
+            <small class="field-error">La entrada no puede ser anterior a hoy.</small>
+          }
         </label>
 
         <label>
           Fecha de salida
 
           <input
-            name="checkOut"
             type="date"
+            name="checkOut"
             [(ngModel)]="nueva.checkOut"
-            required>
+            #checkOut="ngModel"
+            [min]="nueva.checkIn || hoy"
+            required
+            [class.input-error]="(checkOut.invalid && (checkOut.touched || enviado)) || (enviado && !salidaValida)">
+
+          @if ((checkOut.touched || enviado) && checkOut.errors?.['required']) {
+            <small class="field-error">Selecciona la fecha de salida.</small>
+          } @else if ((checkOut.touched || enviado) && nueva.checkOut && nueva.checkIn && !salidaValida) {
+            <small class="field-error">La salida debe ser posterior a la entrada.</small>
+          }
         </label>
 
       </div>
 
+      <!-- ESTADO -->
       <label>
         Estado inicial
 
         <select
           name="status"
-          [(ngModel)]="nueva.status">
+          [(ngModel)]="nueva.status"
+          #status="ngModel"
+          required
+          [class.input-error]="status.invalid && (status.touched || enviado)">
 
-          <option>Pendiente</option>
-          <option>Confirmada</option>
-          <option>Cancelada</option>
-
+          <option value="Pendiente">Pendiente</option>
+          <option value="Confirmada">Confirmada</option>
+          <option value="Cancelada">Cancelada</option>
         </select>
+
+        @if ((status.touched || enviado) && !estadoValido) {
+          <small class="field-error">Selecciona un estado válido.</small>
+        }
       </label>
 
-      <div class="modal-actions">
+      @if (enviado && !formularioValido) {
+        <div class="form-error-summary">
+          Revisa los campos señalados antes de guardar la reserva.
+        </div>
+      }
 
+      <div class="modal-actions">
         <button
           type="button"
           class="secondary-btn"
-          (click)="modalAbierto = false">
+          (click)="cerrarModal()">
           Cancelar
         </button>
 
         <button
           class="primary-btn"
-          type="submit">
+          type="submit"
+          [disabled]="!formularioValido || reservaForm.invalid">
           Guardar reserva
         </button>
-
       </div>
 
     </form>
-
   </div>
-
 }

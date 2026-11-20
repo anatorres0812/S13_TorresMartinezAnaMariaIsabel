@@ -1,9 +1,8 @@
+
 <div class="page-heading">
 
   <div>
-    <span class="eyebrow">
-      ALOJAMIENTO · INVENTARIO
-    </span>
+    <span class="eyebrow">ALOJAMIENTO · INVENTARIO</span>
 
     <h1>Habitaciones</h1>
 
@@ -12,7 +11,10 @@
     </p>
   </div>
 
-  <button class="primary-btn" (click)="abrirModal()">
+  <button
+    class="primary-btn"
+    type="button"
+    (click)="abrirModal()">
     ＋ Nueva habitación
   </button>
 
@@ -71,10 +73,10 @@
         placeholder="⌕ Buscar habitación...">
 
       <select [(ngModel)]="filtro">
-        <option>Todas</option>
-        <option>Disponible</option>
-        <option>Ocupada</option>
-        <option>Mantenimiento</option>
+        <option value="Todas">Todas</option>
+        <option value="Disponible">Disponible</option>
+        <option value="Ocupada">Ocupada</option>
+        <option value="Mantenimiento">Mantenimiento</option>
       </select>
 
     </div>
@@ -110,25 +112,20 @@
             <td>{{ room.type }}</td>
 
             <td class="price">
-              S/ {{ room.price }}
+              S/ {{ room.price | number:'1.2-2' }}
             </td>
 
             <td>
-
               <span
                 class="status"
                 [class.available]="room.status === 'Disponible'"
                 [class.occupied]="room.status === 'Ocupada'"
                 [class.maintenance]="room.status === 'Mantenimiento'">
-
                 {{ room.status }}
-
               </span>
-
             </td>
 
             <td>
-
               <div class="row-actions">
 
                 <select
@@ -136,13 +133,14 @@
                   [value]="room.status"
                   (change)="cambiarEstado(room, $event)">
 
-                  <option>Disponible</option>
-                  <option>Ocupada</option>
-                  <option>Mantenimiento</option>
+                  <option value="Disponible">Disponible</option>
+                  <option value="Ocupada">Ocupada</option>
+                  <option value="Mantenimiento">Mantenimiento</option>
 
                 </select>
 
                 <button
+                  type="button"
                   class="icon-btn danger"
                   title="Eliminar habitación"
                   (click)="eliminar(room)">
@@ -150,14 +148,11 @@
                 </button>
 
               </div>
-
             </td>
 
           </tr>
 
-        }
-
-        @empty {
+        } @empty {
 
           <tr>
             <td colspan="5" class="empty">
@@ -179,12 +174,14 @@
 
   <div
     class="modal-backdrop"
-    (click)="modalAbierto = false">
+    (click)="cerrarModal()">
 
     <form
       class="modal"
+      #roomForm="ngForm"
       (click)="$event.stopPropagation()"
-      (ngSubmit)="guardar()">
+      (ngSubmit)="guardar(roomForm)"
+      novalidate>
 
       <div class="modal-head">
 
@@ -196,75 +193,143 @@
         <button
           type="button"
           class="close-btn"
-          (click)="modalAbierto = false">
+          (click)="cerrarModal()"
+          aria-label="Cerrar formulario">
           ×
         </button>
 
       </div>
 
+      <!-- NÚMERO -->
+
       <label>
         Número de habitación
 
         <input
+          type="text"
           name="number"
           [(ngModel)]="nueva.number"
+          #numberInput="ngModel"
           required
-          placeholder="Ej. 402">
+          maxlength="4"
+          inputmode="numeric"
+          [pattern]="numeroPattern"
+          autocomplete="off"
+          placeholder="Ej. 402"
+          [class.input-error]="numberInput.invalid && (numberInput.touched || enviado) || (numeroDuplicado && (numberInput.touched || enviado))">
+
+        @if ((numberInput.touched || enviado) && numberInput.errors?.['required']) {
+          <small class="field-error">
+            El número de habitación es obligatorio.
+          </small>
+        } @else if ((numberInput.touched || enviado) && numberInput.errors?.['pattern']) {
+          <small class="field-error">
+            Solo se permiten números de 3 o 4 dígitos.
+          </small>
+        } @else if (numeroDuplicado && (numberInput.touched || enviado)) {
+          <small class="field-error">
+            Este número de habitación ya está registrado.
+          </small>
+        }
       </label>
 
+      <!-- TIPO -->
+
       <label>
-        Tipo
+        Tipo de habitación
 
         <select
           name="type"
-          [(ngModel)]="nueva.type">
+          [(ngModel)]="nueva.type"
+          #typeInput="ngModel"
+          required
+          [class.input-error]="typeInput.invalid && (typeInput.touched || enviado)">
 
-          <option>Individual</option>
-          <option>Doble Superior</option>
-          <option>Suite Deluxe</option>
-          <option>Suite Ejecutiva</option>
-          <option>Suite Presidencial</option>
+          @for (tipo of tiposHabitacion; track tipo) {
+            <option [value]="tipo">{{ tipo }}</option>
+          }
 
         </select>
+
+        @if ((typeInput.touched || enviado) && typeInput.invalid) {
+          <small class="field-error">
+            Selecciona un tipo de habitación.
+          </small>
+        }
       </label>
+
+      <!-- PRECIO -->
 
       <label>
         Precio por noche (S/)
 
         <input
-          name="price"
           type="number"
-          min="1"
+          name="price"
           [(ngModel)]="nueva.price"
-          required>
+          #priceInput="ngModel"
+          required
+          min="0.01"
+          max="100000"
+          step="0.01"
+          placeholder="Ej. 190"
+          [class.input-error]="priceInput.invalid && (priceInput.touched || enviado) || (!precioValido && (priceInput.touched || enviado))">
+
+        @if ((priceInput.touched || enviado) && priceInput.errors?.['required']) {
+          <small class="field-error">
+            El precio por noche es obligatorio.
+          </small>
+        } @else if ((priceInput.touched || enviado) && !precioValido) {
+          <small class="field-error">
+            Ingresa un precio mayor que cero, con máximo dos decimales.
+          </small>
+        }
       </label>
+
+      <!-- ESTADO -->
 
       <label>
         Estado
 
         <select
           name="status"
-          [(ngModel)]="nueva.status">
+          [(ngModel)]="nueva.status"
+          #statusInput="ngModel"
+          required
+          [class.input-error]="statusInput.invalid && (statusInput.touched || enviado)">
 
-          <option>Disponible</option>
-          <option>Ocupada</option>
-          <option>Mantenimiento</option>
+          @for (estado of estadosHabitacion; track estado) {
+            <option [value]="estado">{{ estado }}</option>
+          }
 
         </select>
+
+        @if ((statusInput.touched || enviado) && statusInput.invalid) {
+          <small class="field-error">
+            Selecciona el estado de la habitación.
+          </small>
+        }
       </label>
+
+      @if (enviado && !formularioValido) {
+        <div class="form-error-summary">
+          Revisa los campos señalados antes de registrar la habitación.
+        </div>
+      }
 
       <div class="modal-actions">
 
         <button
           type="button"
           class="secondary-btn"
-          (click)="modalAbierto = false">
+          (click)="cerrarModal()">
           Cancelar
         </button>
 
         <button
           class="primary-btn"
-          type="submit">
+          type="submit"
+          [disabled]="!formularioValido || roomForm.invalid">
           Guardar habitación
         </button>
 
