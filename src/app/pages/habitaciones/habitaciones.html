@@ -1,0 +1,277 @@
+<div class="page-heading">
+
+  <div>
+    <span class="eyebrow">
+      ALOJAMIENTO · INVENTARIO
+    </span>
+
+    <h1>Habitaciones</h1>
+
+    <p>
+      Administra los espacios y consulta su disponibilidad.
+    </p>
+  </div>
+
+  <button class="primary-btn" (click)="abrirModal()">
+    ＋ Nueva habitación
+  </button>
+
+</div>
+
+<div class="mini-stats">
+
+  <div>
+    <span class="mini-icon">▤</span>
+    <div>
+      <small>TOTAL</small>
+      <strong>{{ allRooms.length }}</strong>
+    </div>
+  </div>
+
+  <div>
+    <span class="mini-icon green">✓</span>
+    <div>
+      <small>DISPONIBLES</small>
+      <strong>{{ available }}</strong>
+    </div>
+  </div>
+
+  <div>
+    <span class="mini-icon red">⌂</span>
+    <div>
+      <small>OCUPADAS</small>
+      <strong>{{ occupied }}</strong>
+    </div>
+  </div>
+
+  <div>
+    <span class="mini-icon gold">⚙</span>
+    <div>
+      <small>MANTENIMIENTO</small>
+      <strong>{{ maintenance }}</strong>
+    </div>
+  </div>
+
+</div>
+
+<section class="table-card">
+
+  <div class="toolbar">
+
+    <div>
+      <h2>Listado de habitaciones</h2>
+      <p>{{ rooms.length }} resultados encontrados</p>
+    </div>
+
+    <div class="tools">
+
+      <input
+        class="search"
+        [(ngModel)]="busqueda"
+        placeholder="⌕ Buscar habitación...">
+
+      <select [(ngModel)]="filtro">
+        <option>Todas</option>
+        <option>Disponible</option>
+        <option>Ocupada</option>
+        <option>Mantenimiento</option>
+      </select>
+
+    </div>
+
+  </div>
+
+  <div class="table-scroll">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>HABITACIÓN</th>
+          <th>TIPO</th>
+          <th>PRECIO / NOCHE</th>
+          <th>ESTADO</th>
+          <th>ACCIONES</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        @for (room of rooms; track room.id) {
+
+          <tr>
+
+            <td>
+              <span class="room-number">
+                #{{ room.number }}
+              </span>
+            </td>
+
+            <td>{{ room.type }}</td>
+
+            <td class="price">
+              S/ {{ room.price }}
+            </td>
+
+            <td>
+
+              <span
+                class="status"
+                [class.available]="room.status === 'Disponible'"
+                [class.occupied]="room.status === 'Ocupada'"
+                [class.maintenance]="room.status === 'Mantenimiento'">
+
+                {{ room.status }}
+
+              </span>
+
+            </td>
+
+            <td>
+
+              <div class="row-actions">
+
+                <select
+                  aria-label="Cambiar estado"
+                  [value]="room.status"
+                  (change)="cambiarEstado(room, $event)">
+
+                  <option>Disponible</option>
+                  <option>Ocupada</option>
+                  <option>Mantenimiento</option>
+
+                </select>
+
+                <button
+                  class="icon-btn danger"
+                  title="Eliminar habitación"
+                  (click)="eliminar(room)">
+                  ×
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        }
+
+        @empty {
+
+          <tr>
+            <td colspan="5" class="empty">
+              No se encontraron habitaciones.
+            </td>
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+@if (modalAbierto) {
+
+  <div
+    class="modal-backdrop"
+    (click)="modalAbierto = false">
+
+    <form
+      class="modal"
+      (click)="$event.stopPropagation()"
+      (ngSubmit)="guardar()">
+
+      <div class="modal-head">
+
+        <div>
+          <span class="eyebrow">NUEVO REGISTRO</span>
+          <h2>Agregar habitación</h2>
+        </div>
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="modalAbierto = false">
+          ×
+        </button>
+
+      </div>
+
+      <label>
+        Número de habitación
+
+        <input
+          name="number"
+          [(ngModel)]="nueva.number"
+          required
+          placeholder="Ej. 402">
+      </label>
+
+      <label>
+        Tipo
+
+        <select
+          name="type"
+          [(ngModel)]="nueva.type">
+
+          <option>Individual</option>
+          <option>Doble Superior</option>
+          <option>Suite Deluxe</option>
+          <option>Suite Ejecutiva</option>
+          <option>Suite Presidencial</option>
+
+        </select>
+      </label>
+
+      <label>
+        Precio por noche (S/)
+
+        <input
+          name="price"
+          type="number"
+          min="1"
+          [(ngModel)]="nueva.price"
+          required>
+      </label>
+
+      <label>
+        Estado
+
+        <select
+          name="status"
+          [(ngModel)]="nueva.status">
+
+          <option>Disponible</option>
+          <option>Ocupada</option>
+          <option>Mantenimiento</option>
+
+        </select>
+      </label>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="secondary-btn"
+          (click)="modalAbierto = false">
+          Cancelar
+        </button>
+
+        <button
+          class="primary-btn"
+          type="submit">
+          Guardar habitación
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+}

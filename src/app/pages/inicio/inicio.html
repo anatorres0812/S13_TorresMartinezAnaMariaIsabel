@@ -1,0 +1,297 @@
+<section class="hero">
+
+  <div class="hero-copy">
+
+    <span class="eyebrow light">
+      BIENVENIDA A TU ESPACIO DE GESTIÓN
+    </span>
+
+    <h1>
+      La hospitalidad<br>
+      <em>comienza aquí.</em>
+    </h1>
+
+    <p>
+      Administra cada detalle de Tinky Hotel y convierte
+      cada visita en una experiencia inolvidable.
+    </p>
+
+    <a class="button button-light" routerLink="/reservas">
+      ＋ Crear una reserva
+    </a>
+
+  </div>
+
+  <div class="hero-monogram">T</div>
+
+  <div class="hero-caption">
+    <span>01</span>
+    <i></i>
+    <span>HOSPITALIDAD · DETALLE · EXCELENCIA</span>
+  </div>
+
+</section>
+
+<div class="section-title">
+
+  <div>
+    <span class="eyebrow">VISIÓN GENERAL</span>
+    <h2>Resumen del hotel</h2>
+    <p>Un vistazo a la operación de hoy.</p>
+  </div>
+
+  <span class="live-pill">
+    <i></i>
+    Datos actualizados
+  </span>
+
+</div>
+
+<div class="kpi-grid">
+
+  <article class="kpi-card">
+
+    <div class="kpi-top">
+      <span class="kpi-icon">▤</span>
+      <span class="kpi-tag">INVENTARIO</span>
+    </div>
+
+    <strong class="kpi-number">{{ rooms.length }}</strong>
+
+    <h3>Habitaciones</h3>
+    <p>Unidades registradas</p>
+
+    <a routerLink="/habitaciones">
+      Administrar <b>↗</b>
+    </a>
+
+  </article>
+
+  <article class="kpi-card">
+
+    <div class="kpi-top">
+      <span class="kpi-icon blush">♙</span>
+      <span class="kpi-tag">CLIENTES</span>
+    </div>
+
+    <strong class="kpi-number">{{ guests.length }}</strong>
+
+    <h3>Huéspedes</h3>
+    <p>Personas registradas</p>
+
+    <a routerLink="/huespedes">
+      Ver huéspedes <b>↗</b>
+    </a>
+
+  </article>
+
+  <article class="kpi-card">
+
+    <div class="kpi-top">
+      <span class="kpi-icon gold">▦</span>
+      <span class="kpi-tag">OPERACIÓN</span>
+    </div>
+
+    <strong class="kpi-number">{{ reservations.length }}</strong>
+
+    <h3>Reservas</h3>
+    <p>Registros en el sistema</p>
+
+    <a routerLink="/reservas">
+      Ver reservas <b>↗</b>
+    </a>
+
+  </article>
+
+  <article class="kpi-card featured">
+
+    <div class="kpi-top">
+      <span class="kpi-icon dark">◉</span>
+      <span class="kpi-tag">OCUPACIÓN</span>
+    </div>
+
+    <strong class="kpi-number">
+      {{ occupancy }}<small>%</small>
+    </strong>
+
+    <h3>Ocupación actual</h3>
+
+    <p>
+      {{ occupied }} ocupadas ·
+      {{ available }} disponibles
+    </p>
+
+    <a routerLink="/habitaciones">
+      Ver disponibilidad <b>↗</b>
+    </a>
+
+  </article>
+
+</div>
+
+<div class="dashboard-grid">
+
+  <section class="surface recent-panel">
+
+    <div class="panel-head">
+
+      <div>
+        <span class="eyebrow">ACTIVIDAD RECIENTE</span>
+        <h3>Últimas reservas</h3>
+      </div>
+
+      <a routerLink="/reservas">
+        Ver todas <b>→</b>
+      </a>
+
+    </div>
+
+    @if (recent.length) {
+
+      <div class="table-scroll">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>HUÉSPED</th>
+              <th>HABITACIÓN</th>
+              <th>CHECK-IN</th>
+              <th>ESTADO</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (r of recent; track r.id) {
+
+              <tr>
+
+                <td><strong>{{ r.guest }}</strong></td>
+
+                <td>Hab. {{ r.room }}</td>
+
+                <td>{{ r.checkIn | date:'dd/MM/yyyy' }}</td>
+
+                <td>
+                  <span
+                    class="status"
+                    [class.confirmed]="r.status === 'Confirmada'"
+                    [class.pending]="r.status === 'Pendiente'"
+                    [class.cancelled]="r.status === 'Cancelada'">
+                    {{ r.status }}
+                  </span>
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    } @else {
+
+      <div class="empty-state">
+        Aún no hay reservas registradas.
+        <a routerLink="/reservas">Crear la primera</a>
+      </div>
+
+    }
+
+  </section>
+
+  <section class="surface occupancy-panel">
+
+    <div class="panel-head">
+
+      <div>
+        <span class="eyebrow">ESTADO DE HABITACIONES</span>
+        <h3>Disponibilidad</h3>
+      </div>
+
+      <span class="round-icon">⌂</span>
+
+    </div>
+
+    <div class="ring-wrap">
+
+      <div
+        class="ring"
+        [style.background]="
+          'conic-gradient(#bd1e32 ' + occupancy +
+          '%, #f4e8e9 0)'
+        ">
+
+        <div class="ring-inner">
+          <strong>{{ occupancy }}%</strong>
+          <small>Ocupación</small>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="legend">
+
+      <span>
+        <i class="legend-dot red"></i>
+        Ocupadas
+        <b>{{ occupied }}</b>
+      </span>
+
+      <span>
+        <i class="legend-dot pale"></i>
+        Disponibles
+        <b>{{ available }}</b>
+      </span>
+
+    </div>
+
+    <a class="text-link" routerLink="/habitaciones">
+      Gestionar habitaciones →
+    </a>
+
+  </section>
+
+</div>
+
+<section class="quick-section">
+
+  <span class="eyebrow">ACCESOS DIRECTOS</span>
+
+  <div class="quick-links">
+
+    <a routerLink="/habitaciones">
+      <span>＋</span>
+      <div>
+        <strong>Habitaciones</strong>
+        <small>Gestionar espacios</small>
+      </div>
+      <b>↗</b>
+    </a>
+
+    <a routerLink="/huespedes">
+      <span>♙</span>
+      <div>
+        <strong>Huéspedes</strong>
+        <small>Consultar clientes</small>
+      </div>
+      <b>↗</b>
+    </a>
+
+    <a routerLink="/reservas">
+      <span>▦</span>
+      <div>
+        <strong>Reservas</strong>
+        <small>Administrar estancias</small>
+      </div>
+      <b>↗</b>
+    </a>
+
+  </div>
+
+</section>

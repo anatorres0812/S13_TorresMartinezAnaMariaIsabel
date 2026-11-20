@@ -1,0 +1,219 @@
+<div class="page-heading">
+
+  <div>
+    <span class="eyebrow">
+      RELACIÓN CON CLIENTES
+    </span>
+
+    <h1>Huéspedes</h1>
+
+    <p>
+      Conoce y administra a las personas que
+      eligen Tinky Hotel.
+    </p>
+  </div>
+
+  <button class="primary-btn" (click)="abrirModal()">
+    ＋ Registrar huésped
+  </button>
+
+</div>
+
+<div class="guest-summary">
+
+  <div>
+    <span>♙</span>
+
+    <div>
+      <small>HUÉSPEDES REGISTRADOS</small>
+      <strong>{{ allGuests.length }}</strong>
+    </div>
+  </div>
+
+  <p>
+    Una atención personalizada empieza conociendo
+    a cada huésped.
+  </p>
+
+</div>
+
+<section class="table-card">
+
+  <div class="toolbar">
+
+    <div>
+      <h2>Directorio de huéspedes</h2>
+      <p>{{ guests.length }} personas encontradas</p>
+    </div>
+
+    <input
+      class="search"
+      [(ngModel)]="busqueda"
+      placeholder="⌕ Buscar por nombre, correo o documento">
+
+  </div>
+
+  <div class="table-scroll">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>HUÉSPED</th>
+          <th>DOCUMENTO</th>
+          <th>CORREO ELECTRÓNICO</th>
+          <th>TELÉFONO</th>
+          <th>ACCIONES</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        @for (guest of guests; track guest.id) {
+
+          <tr>
+
+            <td>
+
+              <div class="guest-name">
+
+                <span class="guest-avatar">
+                  {{ iniciales(guest.name) }}
+                </span>
+
+                <strong>{{ guest.name }}</strong>
+
+              </div>
+
+            </td>
+
+            <td>{{ guest.document }}</td>
+
+            <td>{{ guest.email }}</td>
+
+            <td>{{ guest.phone }}</td>
+
+            <td>
+
+              <button
+                class="delete-btn"
+                (click)="eliminar(guest)"
+                title="Eliminar huésped">
+
+                Eliminar
+
+              </button>
+
+            </td>
+
+          </tr>
+
+        }
+
+        @empty {
+
+          <tr>
+            <td colspan="5" class="empty">
+              No hay huéspedes que coincidan con la búsqueda.
+            </td>
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+@if (modalAbierto) {
+
+  <div
+    class="modal-backdrop"
+    (click)="modalAbierto = false">
+
+    <form
+      class="modal"
+      (click)="$event.stopPropagation()"
+      (ngSubmit)="guardar()">
+
+      <div class="modal-head">
+
+        <div>
+          <span class="eyebrow">NUEVO CLIENTE</span>
+          <h2>Registrar huésped</h2>
+        </div>
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="modalAbierto = false">
+          ×
+        </button>
+
+      </div>
+
+      <label>
+        Nombre completo
+
+        <input
+          name="name"
+          [(ngModel)]="nuevo.name"
+          required
+          placeholder="Nombre y apellidos">
+      </label>
+
+      <label>
+        Correo electrónico
+
+        <input
+          name="email"
+          type="email"
+          [(ngModel)]="nuevo.email"
+          required
+          placeholder="correo@ejemplo.com">
+      </label>
+
+      <label>
+        Documento de identidad
+
+        <input
+          name="document"
+          [(ngModel)]="nuevo.document"
+          required
+          placeholder="Número de documento">
+      </label>
+
+      <label>
+        Teléfono
+
+        <input
+          name="phone"
+          [(ngModel)]="nuevo.phone"
+          placeholder="999 999 999">
+      </label>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="secondary-btn"
+          (click)="modalAbierto = false">
+          Cancelar
+        </button>
+
+        <button
+          class="primary-btn"
+          type="submit">
+          Guardar huésped
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+}

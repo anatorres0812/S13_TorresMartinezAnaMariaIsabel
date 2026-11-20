@@ -1,0 +1,150 @@
+<div class="app-shell">
+
+  <div
+    class="mobile-scrim"
+    [class.visible]="menuAbierto"
+    (click)="cerrarMenu()">
+  </div>
+
+  <aside class="sidebar" [class.sidebar-open]="menuAbierto">
+
+    <a class="brand" routerLink="/inicio" (click)="cerrarMenu()">
+
+      <span class="brand-mark">T</span>
+
+      <span class="brand-copy">
+        <strong>TINKY HOTEL</strong>
+        <small>BOUTIQUE · EXPERIENCE</small>
+      </span>
+
+    </a>
+
+    <div class="nav-caption">MENÚ PRINCIPAL</div>
+
+    <nav class="nav-list">
+
+      <a
+        routerLink="/inicio"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact:true}"
+        (click)="cerrarMenu()">
+
+        <span class="nav-symbol">⌂</span>
+        <span>Inicio</span>
+        <span class="nav-arrow">›</span>
+
+      </a>
+
+      <a
+        routerLink="/habitaciones"
+        routerLinkActive="active"
+        (click)="cerrarMenu()">
+
+        <span class="nav-symbol">▤</span>
+        <span>Habitaciones</span>
+        <span class="nav-arrow">›</span>
+
+      </a>
+
+      <a
+        routerLink="/huespedes"
+        routerLinkActive="active"
+        (click)="cerrarMenu()">
+
+        <span class="nav-symbol">♙</span>
+        <span>Huéspedes</span>
+        <span class="nav-arrow">›</span>
+
+      </a>
+
+      <a
+        routerLink="/reservas"
+        routerLinkActive="active"
+        (click)="cerrarMenu()">
+
+        <span class="nav-symbol">▦</span>
+        <span>Reservas</span>
+        <span class="nav-arrow">›</span>
+
+      </a>
+
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-note">
+      <span class="note-spark">✦</span>
+      <strong>Una estancia especial</strong>
+      <p>
+        Cuidamos cada detalle para ofrecer
+        experiencias memorables.
+      </p>
+    </div>
+
+    <div class="profile-mini">
+
+      <div class="profile-avatar">AD</div>
+
+      <div>
+        <strong>Administrador</strong>
+        <small>Panel de gestión</small>
+      </div>
+
+      <span class="profile-dots">•••</span>
+
+    </div>
+
+    <div class="sidebar-foot">
+      TINKY HOTEL · 2026
+    </div>
+
+  </aside>
+
+  <main class="main-area">
+
+    <header class="topbar">
+
+      <button
+        class="mobile-menu"
+        type="button"
+        aria-label="Abrir menú"
+        (click)="menuAbierto = !menuAbierto">
+        ☰
+      </button>
+
+      <div class="topbar-location">
+        <span class="location-dot"></span>
+        <span>Administración</span>
+        <i>/</i>
+        <strong>Panel principal</strong>
+      </div>
+
+      <div class="topbar-actions">
+
+        <span class="top-date">
+          {{ fecha | date:'EEEE, d MMMM y' }}
+        </span>
+
+        <span class="top-divider"></span>
+
+        <div class="top-user">
+          <span class="top-avatar">AD</span>
+          <span>Admin</span>
+        </div>
+
+      </div>
+
+    </header>
+
+    <div class="page-wrap">
+      <router-outlet></router-outlet>
+    </div>
+
+    <footer class="app-footer">
+      <span>© 2026 TINKY HOTEL. Todos los derechos reservados.</span>
+      <span>Tu descanso, nuestra elegancia.</span>
+    </footer>
+
+  </main>
+
+</div>

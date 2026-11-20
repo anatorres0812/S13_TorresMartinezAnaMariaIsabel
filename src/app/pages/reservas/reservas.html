@@ -1,0 +1,286 @@
+<div class="page-heading">
+
+  <div>
+    <span class="eyebrow">
+      ESTANCIAS · CONTROL DE INGRESOS
+    </span>
+
+    <h1>Reservas</h1>
+
+    <p>
+      Organiza las estancias y acompaña cada experiencia.
+    </p>
+  </div>
+
+  <button class="primary-btn" (click)="abrirModal()">
+    ＋ Nueva reserva
+  </button>
+
+</div>
+
+<div class="reservation-counters">
+
+  <div>
+    <small>TOTAL RESERVAS</small>
+    <strong>{{ allReservations.length }}</strong>
+  </div>
+
+  <div>
+    <small>CONFIRMADAS</small>
+    <strong>{{ confirmedCount }}</strong>
+  </div>
+
+  <div>
+    <small>PENDIENTES</small>
+    <strong>{{ pendingCount }}</strong>
+  </div>
+
+  <div>
+    <small>CANCELADAS</small>
+    <strong>{{ cancelledCount }}</strong>
+  </div>
+
+</div>
+
+<section class="table-card">
+
+  <div class="toolbar">
+
+    <div>
+      <h2>Registro de reservas</h2>
+      <p>Consulta y actualiza el estado de cada estancia.</p>
+    </div>
+
+    <div class="tools">
+
+      <input
+        class="search"
+        [(ngModel)]="busqueda"
+        placeholder="⌕ Buscar huésped o habitación">
+
+      <select [(ngModel)]="filtro">
+        <option>Todas</option>
+        <option>Confirmada</option>
+        <option>Pendiente</option>
+        <option>Cancelada</option>
+      </select>
+
+    </div>
+
+  </div>
+
+  <div class="table-scroll">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>CÓDIGO</th>
+          <th>HUÉSPED</th>
+          <th>HABITACIÓN</th>
+          <th>CHECK-IN</th>
+          <th>CHECK-OUT</th>
+          <th>ESTADO</th>
+          <th>ACCIÓN</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        @for (r of reservations; track r.id) {
+
+          <tr>
+
+            <td class="code">
+              TH-{{ r.id.toString().padStart(4, '0') }}
+            </td>
+
+            <td>
+              <strong>{{ r.guest }}</strong>
+            </td>
+
+            <td>
+              Hab. {{ r.room }}
+            </td>
+
+            <td>
+              {{ r.checkIn | date:'dd/MM/yyyy' }}
+            </td>
+
+            <td>
+              {{ r.checkOut | date:'dd/MM/yyyy' }}
+            </td>
+
+            <td>
+
+              <span
+                class="status"
+                [class.confirmed]="r.status === 'Confirmada'"
+                [class.pending]="r.status === 'Pendiente'"
+                [class.cancelled]="r.status === 'Cancelada'">
+
+                {{ r.status }}
+
+              </span>
+
+            </td>
+
+            <td>
+
+              <div class="row-actions">
+
+                <select
+                  [value]="r.status"
+                  (change)="cambiarEstado(r, $event)"
+                  aria-label="Cambiar estado">
+
+                  <option>Confirmada</option>
+                  <option>Pendiente</option>
+                  <option>Cancelada</option>
+
+                </select>
+
+                <button
+                  class="delete-btn"
+                  (click)="eliminar(r)"
+                  title="Eliminar reserva">
+
+                  ×
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        }
+
+        @empty {
+
+          <tr>
+            <td colspan="7" class="empty">
+              No se encontraron reservas.
+            </td>
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+@if (modalAbierto) {
+
+  <div
+    class="modal-backdrop"
+    (click)="modalAbierto = false">
+
+    <form
+      class="modal"
+      (click)="$event.stopPropagation()"
+      (ngSubmit)="guardar()">
+
+      <div class="modal-head">
+
+        <div>
+          <span class="eyebrow">NUEVA ESTANCIA</span>
+          <h2>Crear reserva</h2>
+        </div>
+
+        <button
+          type="button"
+          class="close-btn"
+          (click)="modalAbierto = false">
+
+          ×
+
+        </button>
+
+      </div>
+
+      <label>
+        Nombre del huésped
+
+        <input
+          name="guest"
+          [(ngModel)]="nueva.guest"
+          required
+          placeholder="Nombre completo">
+      </label>
+
+      <label>
+        Número de habitación
+
+        <input
+          name="room"
+          [(ngModel)]="nueva.room"
+          required
+          placeholder="Ej. 204">
+      </label>
+
+      <div class="date-grid">
+
+        <label>
+          Fecha de entrada
+
+          <input
+            name="checkIn"
+            type="date"
+            [(ngModel)]="nueva.checkIn"
+            required>
+        </label>
+
+        <label>
+          Fecha de salida
+
+          <input
+            name="checkOut"
+            type="date"
+            [(ngModel)]="nueva.checkOut"
+            required>
+        </label>
+
+      </div>
+
+      <label>
+        Estado inicial
+
+        <select
+          name="status"
+          [(ngModel)]="nueva.status">
+
+          <option>Pendiente</option>
+          <option>Confirmada</option>
+          <option>Cancelada</option>
+
+        </select>
+      </label>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="secondary-btn"
+          (click)="modalAbierto = false">
+          Cancelar
+        </button>
+
+        <button
+          class="primary-btn"
+          type="submit">
+          Guardar reserva
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+}

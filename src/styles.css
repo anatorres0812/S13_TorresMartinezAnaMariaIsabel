@@ -1,0 +1,374 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap');
+
+/* =========================================
+   TINKY HOTEL - ESTILOS GLOBALES
+========================================= */
+
+:root {
+  --wine: #351018;
+  --wine-dark: #1b0d11;
+  --wine-light: #6e1828;
+
+  --red: #b80000;
+  --red-bright: #e00000;
+  --coral: #ff7777;
+
+  --pink: #fff0f1;
+  --pink-soft: #fffafa;
+
+  --ink: #351c22;
+  --muted: #9a8589;
+  --line: #f0e6e7;
+  --surface: #ffffff;
+  --background: #fffafa;
+
+  --green: #43805a;
+  --green-bg: #edf7ef;
+
+  --gold: #a7782b;
+  --gold-bg: #fbf3e5;
+
+  --danger: #ad4050;
+  --danger-bg: #fbecee;
+
+  --shadow: 0 5px 20px rgba(53, 16, 24, 0.05);
+  --shadow-hover: 0 12px 28px rgba(53, 16, 24, 0.12);
+
+  --radius: 12px;
+
+  --font-body: 'Manrope', Arial, sans-serif;
+  --font-title: 'Playfair Display', Georgia, serif;
+}
+
+/* =========================================
+   RESET
+========================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+
+  background: var(--background);
+  color: var(--ink);
+
+  font-family: var(--font-body);
+  font-size: 13px;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================================
+   TIPOGRAFÍA
+========================================= */
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-title);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 25px;
+}
+
+h3 {
+  font-size: 19px;
+}
+
+p {
+  line-height: 1.7;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-body);
+}
+
+button {
+  cursor: pointer;
+}
+
+/* =========================================
+   SELECCIÓN DE TEXTO
+========================================= */
+
+::selection {
+  background: #f6c8ce;
+  color: #47121b;
+}
+
+/* =========================================
+   SCROLLBAR PERSONALIZADO
+========================================= */
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff5f6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d9a5ab;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a51d2e;
+}
+
+/* =========================================
+   CAMPOS DE FORMULARIO
+========================================= */
+
+input,
+select,
+textarea {
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #d78b94 !important;
+  box-shadow: 0 0 0 3px rgba(183, 29, 48, 0.07);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #b9a8ab;
+}
+
+/* =========================================
+   BOTONES
+========================================= */
+
+button {
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   ENLACES
+========================================= */
+
+a {
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+/* =========================================
+   ANIMACIONES GENERALES
+========================================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(184, 0, 0, 0.25);
+  }
+
+  70% {
+    box-shadow: 0 0 0 7px rgba(184, 0, 0, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(184, 0, 0, 0);
+  }
+}
+
+/* =========================================
+   CLASES DE ANIMACIÓN
+========================================= */
+
+.animate-fade {
+  animation: fadeIn 0.4s ease both;
+}
+
+.animate-up {
+  animation: slideUp 0.45s ease both;
+}
+
+.animate-right {
+  animation: slideRight 0.4s ease both;
+}
+
+.animate-scale {
+  animation: scaleIn 0.3s ease both;
+}
+
+/* =========================================
+   TARJETAS
+========================================= */
+
+.card,
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* =========================================
+   ESTADOS
+========================================= */
+
+.badge-success {
+  color: var(--green);
+  background: var(--green-bg);
+}
+
+.badge-warning {
+  color: var(--gold);
+  background: var(--gold-bg);
+}
+
+.badge-danger {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+/* =========================================
+   ACCESIBILIDAD
+========================================= */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #eaa0a8;
+  outline-offset: 3px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+  body {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 27px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+}
+
+/* =========================================
+   REDUCCIÓN DE MOVIMIENTO
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
